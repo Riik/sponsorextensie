@@ -19,6 +19,8 @@ if (CHROME) {
     browser = chrome;
 }
 
+//document.body.innerHTML = document.body.innerHTML.replace(new RegExp("Cadeaubon", "g"), "testsetst");
+
 function checkUpdate() {
     getStorage(storage => {
         if (typeof storage[URLS_KEY] !== 'undefined') {
@@ -48,7 +50,7 @@ function updateURLs() {
             [URLS_KEY]: data['affiliates']
         });
     });
-}
+}/* 
 
 function navigateTo(tabId, target) {
     browser.tabs.update(tabId, {url: target});
@@ -74,7 +76,7 @@ function enableLinking(link, target, tabId, hostname, notificationTitle) {
     browser.notifications.create(NOTIFICATION_ID, {
         type: "basic",
         title: notificationTitle,
-        message: "Klik op deze notificatie of de icoon van de extensie om via die link te gaan.",
+        message: "U bent deel van de mooiste lichting van C.S.R.!",
         iconUrl: browser.extension.getURL("icons/icon128.png")
     }, function (nId) {
     });
@@ -95,27 +97,44 @@ function handleCustomTarget(target, tabId, url, hostname) {
     }
 
     enableLinking(
-        target['link'],
+        "https://www.youtube.com/watch?v=wEvQ9xAjltQ",
         target,
         tabId,
         hostname,
-        target['shop_name'] + " heeft een C.S.R. affiliate link!"
+        "2012 b'vo"
     );
 }
 
 function navigationCompleteListener(event) {
+//	if(document.body.innerHTML.search("Cadeaubon") != -1){
+//			    return handleCustomTarget(custom_target, tabId, url, hostname);
+//		} 
+	console.log("handling link")
+	console.log(document.body)
+	
+
     getStorage(storage => {
         const tabId = event.tabId;
         const url = event.url;
         const hostname = extractHostname(url);
         const nowww_hostname = hostname.replace(/^(www\.)/,"");
         const custom_target = CUSTOM_TARGETS[hostname];
-
-        // If we have a custom affiliate link for the current target
-        if (custom_target) {
-            return handleCustomTarget(custom_target, tabId, url, hostname);
-        }
-
+		console.log("handeling stoar")
+		
+		chrome.tabs.get(tabId, function(tab){
+			  chrome.windows.get(tab.windowId, function(win){ 
+				   console.log(win.document); // THIS IS THE WINDOW OBJECT
+			  });
+		 });
+		
+		
+       //If we have a custom affiliate link for the current target
+        //if (custom_target) {
+            //return handleCustomTarget(custom_target, tabId, url, hostname);
+        //}
+ 	
+/*
+ 		
         const urls = storage[URLS_KEY];
         const targets = (nowww_hostname !== hostname) ? (urls[hostname] || []).concat(urls[nowww_hostname]) : urls[hostname] ;
 
@@ -139,14 +158,16 @@ function navigationCompleteListener(event) {
             tabId,
             hostname,
             target['shop_name'] + " heeft ook een gesponsorde link!"
-        );
+        ); 
+
     });
+
 }
 
 function extractHostname(url) {
     //find & remove protocol (http, ftp, etc.) and get hostname, then find & remove "?"
     return ((url.indexOf("://") > -1) ? url.split('/')[2] : url.split('/')[0]).split('?')[0];
-}
+} */
 
 function getStorage(key, callback) {
     if (!callback || typeof callback !== 'function') {
